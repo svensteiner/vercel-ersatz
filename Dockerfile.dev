@@ -1,0 +1,42 @@
+# Ersatz Deploy Server - Development Image
+FROM python:3.12-slim
+
+# System Dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    gnupg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.js installieren
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# pnpm installieren
+RUN npm install -g pnpm
+
+# Arbeitsverzeichnis
+WORKDIR /app
+
+# Python Dependencies (dev + prod)
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
+
+# Verzeichnisse erstellen
+RUN mkdir -p /var/ersatz/deployments \
+    /var/ersatz/repos \
+    /var/ersatz/logs \
+    /var/ersatz/caddy
+
+# Umgebungsvariablen
+ENV ERSATZ_BASE_DIR=/var/ersatz
+ENV PYTHONUNBUFFERED=1
+ENV DEBUG=1
+
+# Port
+EXPOSE 9000
+
+# Dev Start mit Reload
+CMD ["uvicorn", "deploy-server.main:app", "--host", "0.0.0.0", "--port", "9000", "--reload"]

@@ -1,0 +1,28 @@
+# Ersatz Caddyfile
+# Auto-generated configuration for deployments
+
+{
+    # Global Options
+    email {$SSL_EMAIL:admin@example.com}
+
+    # Development: disable auto HTTPS
+    # auto_https off
+}
+
+# API Server
+:9001 {
+    reverse_proxy deploy-server:9000
+
+    # Health Check
+    handle /health {
+        respond "OK" 200
+    }
+}
+
+# Import site configurations
+import /var/ersatz/caddy/sites/*.caddy
+
+# Default fallback
+:80, :443 {
+    respond "Ersatz - Domain not configured" 404
+}

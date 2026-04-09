@@ -1,0 +1,21 @@
+# Ersatz - Python Dependencies
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# HTTP Client (für Proxy)
+aiohttp>=3.9.0
+httpx>=0.26.0
+
+# Datenvalidierung
+pydantic>=2.5.0
+
+# CLI
+requests>=2.31.0
+
+# Process Management
+psutil>=5.9.0
+
+# Utilities
+python-dotenv>=1.0.0
